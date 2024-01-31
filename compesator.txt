@@ -1,0 +1,113 @@
+/*
+maximo branco 430
+
+minimo "preto"2100 (varia pois o chao nao eh homogeneo)
+*/
+
+/*
+Ordem dos sesnores
+11 - frontal
+12 - esquerda
+13 - direta
+14 - tras
+*/
+
+/*
+Menor que 6.70 na leitura = desligar robô
+*/
+
+
+/*
+Foward Motor Right
+C(z) = 0.48435 (z-0.3277) = u(z)/e(z)
+       ------------------
+             (z-1)
+
+C(z) * z^-1/z^-1
+
+u(z)*(z-1)*z^-1 = e(z)*0.48435*(z-0.3277)*z^-1
+
+u(z)-u(z)*z^-1 = 0.48435*e(z)-0.158721495*e(z)*z^-1
+
+u(z) = 0.48435*e(z)-0.158721495*e(z)*z^-1+u(z)*z^-1
+
+u(k) = 0.48435*e(k)-0.158721495*e(k-1)+u(k-1)
+
+//modelo teorico
+Gz = y(z)/u(z) = 1.359/(z-0.5134) * (z^-1/z^-1)
+y(z) - 0.5134*y(z)*z^-1 = 1.359*u(z)*z^-1
+y(z) = 0.5134*y(z)*z^-1 + 1.359*u(z)*z^-1
+y(k) = 0.5134*y(k-1) + 1.359*u(k-1)
+
+
+
+Foward motor left
+0.59807 (z-0.3295)
+------------------
+      (z-1)
+
+Backward motor right
+
+0.44963 (z-0.4318)
+------------------
+    (z-1)
+
+
+Backwar motor left
+
+  0.46713 (z-0.4268)
+  ------------------
+        (z-1)
+*/
+
+
+/*
+
+    ts > tc*4
+    ts/4 > tc
+    tc < ts/4 (tempo de subida da resposta ao degrau do motor - 96% yss)
+    ts = 200 ms
+
+    tc = 50 ms no maximo
+*/
+
+
+
+/*Teste do encoder*/
+        // Wheels = my_wheels.motors_data();
+        // printf("%.2f %.2f %.2f %.2f\n\n\n", Wheels.delta_S, Wheels.delta_theta, Wheels.V, Wheels.w);
+        
+        // update_pwm(4096, 4096, 4096, 4096);
+        // move_foward();
+        // Wheels.delta_S, Wheels.delta_theta, Wheels.V, Wheels.w, %.2f %.2f %.2f 
+        /*
+            Testar se as medidas do encoder estão funcionando - OK
+            Testar se a leitura dos sensores IR estão funcionando
+            Testar se a leitura do MPU6050 está funcionando
+            Testar compensadores dos motores
+            Testar obstacle avioidance
+            Testar goal to goal com a odometria
+        */
+        
+       /*Leitura dos IR*/
+        // for(int i = 0; i <  NUM_SENSORS - 5; i++)
+        // {
+        //     printf("%d\t", sensors[i]);
+        // }
+
+
+// battery_value = voltage_measure(sensors[15]);
+
+        // printf("%d %d %d %d %.2f\n", front_sensor, lateral_sensor_L, lateral_sensor_R, back_sensor, battery_value);
+
+        /*Teste dos compesadores*/
+        // uint16_t pwmR1 = 0, pwmL1 = 0, pwmR2 = 0, pwmL2 = 0;
+        // pwmR1 = MR_F_compensator(5.0);
+        // pwmL1 = ML_F_compensator(5.0);
+        // pwmR2 = MR_B_compensator(5.0);
+        // pwmL2 = ML_B_compensator(5.0);
+        // update_pwm(pwmL1,pwmL2,pwmR1,pwmR2);
+        // move_foward();
+
+        /*Testar obstacle avoidance*/
+        // obstacle_avoidance();

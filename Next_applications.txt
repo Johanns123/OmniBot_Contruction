@@ -1,0 +1,51 @@
+void line_follower(void);
+int16_t wheighted_avg_sensors(void);
+
+void line_follower(void)
+{
+    static int16_t setpoint_ang = 0;
+    static float setpoint_lin = 0;
+    static float PV_lin = 0, PV_ang = 0;
+    static float u_ang = 0.0, u_lin = 0.0;
+    static uint16_t u_ang_pwm = 0, u_lin_pwm = 0, duty_r = 0, duty_l = 0;
+    static float error_lin = 0, error_ang = 0;
+    static float kp_ang = 1, ki_ang = 0.0, kd_ang = 0.0;
+    static float kp_lin = 1, ki_lin = 0.0, kd_lin = 0.0;
+
+    setpoint_ang = (float)wheighted_avg_sensors(); //rad/s
+    setpoint_lin = 0.6; //m/s
+    PV_ang = Wheels.delta_theta;
+    PV_lin = Wheels.V;
+
+    error_ang = (setpoint_ang - PV_ang);
+    error_lin = (setpoint_lin - PV_lin);
+
+    u_ang = PID_control(error_ang, kp_ang, ki_ang, kd_ang);
+    u_lin = PID_control(error_lin, kp_lin, ki_lin, kd_lin);
+
+    u_ang_pwm = (uint16_t)fabs(u_ang * (4096.0/12.0));
+    u_lin_pwm = (uint16_t)fabs(u_lin * (4096.0/12.0));
+
+    duty_r = u_lin_pwm + u_ang_pwm; 
+    duty_l = u_lin_pwm - u_ang_pwm; 
+
+    update_pwm(duty_l, duty_l, duty_r, duty_r);
+}
+
+int16_t wheighted_avg_sensors(void)
+{
+    static int16_t sensors_avg = 0, num = 0;
+    static uint16_t den = 0;
+    static int8_t wheight [11] = {-10, -20, -30, -40, -50, 0, 10, 20, 30, 40, 50}; 
+    for(int i = 0; i < (NUM_SENSORS - 5); i++)
+    {
+        num += sensors[i] * wheight[i];
+        den += sensors[i];
+    }
+
+    if(!den)
+        return 0;
+
+    sensors_avg = num/den;
+    return sensors_avg;         
+}
